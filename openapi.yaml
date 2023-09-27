@@ -1,0 +1,815 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Sample API'
+servers:
+  - url: https://example.com/api
+paths:
+  /blog/categories:
+    get:
+      summary: Get blog categories
+      parameters:
+        - name:  page
+          in: query
+          schema:
+            $ref: '#/components/schemas/PageInput'
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriesResult'
+    post:
+      summary: Create blog category
+      parameters:
+        - name: data
+          description: Input data
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/CategoryInput'
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResult'
+  /blog/categories/{categoryId}:
+    get:
+      summary: Get blog category
+      parameters:
+        - name: categoryId
+          description: Category ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResult'
+    patch:
+      summary: Update blog category
+      parameters:
+        - name: categoryId
+          description: Category ID
+          required: true
+          in: path
+          schema:
+            type: integer
+        - name: data
+          description: Input data
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/CategoryInput'
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResult'
+    delete:
+      summary: Delete blog category
+      parameters:
+        - name: categoryId
+          description: Category ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Successfull resposnse
+
+  /blog/posts:
+    get:
+      summary: Get blog posts
+      parameters:
+        - name: page
+          in: query
+          schema:
+            $ref: '#/components/schemas/PageInput'
+        - name: include
+          in: query
+          schema:
+            type: string
+            description: 'author,tags,categories'
+        - name: filter
+          in: query
+          schema:
+            type: object
+            properties:
+              id:
+                type: array
+                items:
+                  type: integer
+              categories:
+                type: object
+                properties:
+                  id:
+                    type: array
+                    items:
+                      type: integer
+              title:
+                type: string
+              content:
+                type: string
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostsResult'
+    post:
+      summary: Create blog post
+      parameters:
+        - name: data
+          description: Input data
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/PostInput'
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResult'
+  /blog/posts/{postId}:
+    get:
+      summary: Get blog post
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+        - name: include
+          in: query
+          schema:
+            type: string
+            description: 'author,tags,categories'
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResult'
+    patch:
+      summary: Update blog post
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+        - name: data
+          description: Input data
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/PostInput'
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResult'
+    delete:
+      summary: Delete blog post
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Successfull resposnse
+  /blog/posts/{postId}/author:
+    get:
+      summary: Get blog post author
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Author'
+  /blog/posts/{postId}/categories:
+    get:
+      summary: Get blog post categories
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriesResult'
+  /blog/posts/{postId}/tags:
+    get:
+      summary: Get blog post tags
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+  /blog/posts/{postId}/relationships/author:
+    get:
+      summary: Get blog post author id
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                          - 'users'
+                      id:
+                        type: string
+  /blog/posts/{postId}/relationships/categories:
+    get:
+      summary: Get blog post category ids
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - 'categories'
+                        id:
+                          type: string
+    post:
+      summary: Attach categories to blog post
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+        - name: data
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - 'categories'
+                id:
+                  type: string
+      responses:
+        204:
+          description: Successfull resposnse
+    patch:
+      summary: Update blog post categories
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+        - name: data
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - 'categories'
+                id:
+                  type: string
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - 'categories'
+                        id:
+                          type: string
+    delete:
+      summary: Detach categories from blog post
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+        - name: data
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - 'categories'
+                id:
+                  type: string
+      responses:
+        204:
+          description: Successfull resposnse
+  /blog/posts/{postId}/relationships/tags:
+    get:
+      summary: Get blog post tag ids
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum:
+                            - 'tags'
+                        id:
+                          type: string
+    delete:
+      summary: Delete tags from blog post
+      parameters:
+        - name: postId
+          description: Post ID
+          required: true
+          in: path
+          schema:
+            type: integer
+        - name: data
+          required: true
+          in: query
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                    - 'tags'
+                id:
+                  type: string
+      responses:
+        204:
+          description: Successfull resposnse
+
+  /blog/tags:
+    get:
+      summary: Get blog post tags
+      parameters:
+        - name: page
+          in: query
+          schema:
+            $ref: '#/components/schemas/PageInput'
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagsResult'
+    post:
+      summary: Create blog post tag
+      parameters:
+        - name: data
+          description: Input data
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TagInput'
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagResult'
+  /blog/tags/{tagId}:
+    get:
+      summary: Get blog post tag
+      parameters:
+        - name: tagId
+          description: Tag ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagResult'
+    patch:
+      summary: Update blog post tag
+      parameters:
+        - name: tagId
+          description: Tag ID
+          required: true
+          in: path
+          schema:
+            type: integer
+        - name: data
+          description: Input data
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/TagInput'
+      responses:
+        200:
+          description: Successfull resposnse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagResult'
+    delete:
+      summary: Delete blog post tag
+      parameters:
+        - name: tagId
+          description: Tag ID
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Successfull resposnse
+components:
+  schemas:
+    PostsResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+        included:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/Tag'
+              - $ref: '#/components/schemas/Author'
+              - $ref: '#/components/schemas/Category'
+    PostResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Post'
+    Post:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - 'posts'
+        id:
+          type: string
+        attributes:
+          type: object
+          properties:
+            title:
+              type: string
+            content:
+              type: string
+            publishedAt:
+              type: string
+              nullable: true
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+        relationships:
+          type: object
+          properties:
+            author:
+              type: object
+              properties:
+                links:
+                  $ref: '#/components/schemas/RelationLinks'
+                data:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    id:
+                      type: string
+            tags:
+              type: object
+              properties:
+                links:
+                  $ref: '#/components/schemas/RelationLinks'
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      id:
+                        type: string
+            categories:
+              type: object
+              properties:
+                links:
+                  $ref: '#/components/schemas/RelationLinks'
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      id:
+                        type: string
+        links:
+          $ref: '#/components/schemas/SelfLinks'
+
+    Tag:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - 'tags'
+        id:
+          type: string
+        attributes:
+          type: object
+          properties:
+            title:
+              type: string
+            postId:
+              type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+        links:
+          $ref: '#/components/schemas/SelfLinks'
+    Author:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - 'users'
+        id:
+          type: string
+        attributes:
+          type: object
+          properties:
+            name:
+              type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+        links:
+          $ref: '#/components/schemas/SelfLinks'
+    SelfLinks:
+      type: object
+      properties:
+        self:
+          type: string
+    RelationLinks:
+      type: object
+      properties:
+        related:
+          type: string
+        self:
+          type: string
+    PageInput:
+      type: object
+      properties:
+        size:
+          type: integer
+        number:
+          type: integer
+    Category:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - 'categories'
+        id:
+          type: string
+        attributes:
+          type: object
+          properties:
+            title:
+              type: string
+            slug:
+              type: string
+            createdAt:
+              type: string
+            updatedAt:
+              type: string
+        links:
+          $ref: '#/components/schemas/SelfLinks'
+    CategoriesResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    CategoryResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Category'
+    CategoryInput:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - 'categories'
+        attributes:
+          type: object
+          properties:
+            title:
+              type: string
+            slug:
+              type: string
+            status:
+              type: string
+              enum:
+                - "A"
+                - "D"
+    TagsResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+    TagResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Tag'
+    TagInput:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - 'tags'
+        attributes:
+          type: object
+          properties:
+            title:
+              type: string
+            postId:
+              type: integer
+    PostInput:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - 'posts'
+        attributes:
+          type: object
+          properties:
+            title:
+              type: string
+            content:
+              type: string
+            publishedAt:
+              type: string
+              nullable: true
+        relationships:
+          type: object
+          properties:
+            categories:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                          - 'categories'
+                      id:
+                        type: string
+security:
+  - ApiKey: []

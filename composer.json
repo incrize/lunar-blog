@@ -1,0 +1,34 @@
+{
+    "name": "cscart/lunar-blog",
+    "description": "Simple blog add-on for Lunar",
+    "license": "MIT",
+    "version": "0.1",
+    "require": {
+        "php": "^8.0",
+        "lunarphp/lunar": "^0.5",
+        "laravel-json-api/laravel": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "CSCart\\Lunar\\Blog\\": "src/",
+            "CSCart\\Lunar\\Blog\\Database\\Seeders\\": "database/seeders"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CSCart\\Lunar\\Blog\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "lunar": {
+            "name": "Blog"
+        },
+        "laravel": {
+            "providers": [
+                "CSCart\\Lunar\\Blog\\BlogServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
